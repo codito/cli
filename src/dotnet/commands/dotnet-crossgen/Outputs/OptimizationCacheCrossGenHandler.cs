@@ -1,11 +1,10 @@
 // Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.DotNet.Cli.Utils;
-using Microsoft.DotNet.Tools.CrossGen;
 using Microsoft.Extensions.DependencyModel;
 
 namespace Microsoft.DotNet.Tools.CrossGen.Outputs
@@ -19,6 +18,7 @@ namespace Microsoft.DotNet.Tools.CrossGen.Outputs
         private const string Sha512PropertyName = "sha512";
         private readonly string _archName;
         private readonly bool _overwriteOnConflict;
+        private IDictionary<string, string> _libShaValues;
 
         public OptimizationCacheCrossGenHandler(
             string crossGenExe,
@@ -34,6 +34,7 @@ namespace Microsoft.DotNet.Tools.CrossGen.Outputs
         {
             _archName = crossGenTarget.RuntimeIdentifier.Split(new char[]{'-'}).Last();
             _overwriteOnConflict = overwriteOnConflict;
+            _libShaValues = new Dictionary<string, string>();
         }
 
         protected override string GetOutputDirFor(string sourcePathUsed, RuntimeLibrary lib, string assetPath)
@@ -45,12 +46,21 @@ namespace Microsoft.DotNet.Tools.CrossGen.Outputs
 
         protected override bool ShouldCrossGenLib(RuntimeLibrary lib)
         {
+            // calculate/verify sha value ahead of time so the process can bail out completely
+            // without affect the cache if there's an error
+            var sha = GetShaValueToWrite(lib);
+            if (sha != null)
+            {
+                _libShaValues.Add(lib.Name, sha);
+            }
+
             return lib.Serviceable;
         }
 
         protected override void OnCrossGenCompletedFor(RuntimeLibrary lib)
         {
-            var sha = GetShaValueToWrite(lib);
+            string sha;
+            _libShaValues.TryGetValue(lib.Name, out sha);
             if (sha != null)
             {
                 var shaLocation = GetShaLocation(lib);
