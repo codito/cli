@@ -21,6 +21,7 @@ using Microsoft.DotNet.Tools.New;
 using Microsoft.DotNet.Tools.NuGet;
 using Microsoft.DotNet.Tools.Pack3;
 using Microsoft.DotNet.Tools.Publish;
+using Microsoft.DotNet.Tools.Publish3;
 using Microsoft.DotNet.Tools.Restore;
 using Microsoft.DotNet.Tools.Restore3;
 using Microsoft.DotNet.Tools.Run;
@@ -50,6 +51,7 @@ namespace Microsoft.DotNet.Cli
             ["msbuild"] = MSBuildCommand.Run,
             ["run3"] = Run3Command.Run,
             ["restore3"] = Restore3Command.Run,
+            ["publish3"] = Publish3Command.Run,
             ["vstest"] = VSTestCommand.Run,
             ["test3"] = Test3Command.Run,
             ["pack3"] = Pack3Command.Run,
