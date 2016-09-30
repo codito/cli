@@ -102,6 +102,9 @@ namespace Microsoft.DotNet.Tools.Test3
                     "/t:VSTest"
                 };
 
+                // TODO: Need to add this on the basis of --diag
+                msbuildArgs.Add("/v:quiet");
+
                 if (settingOption.HasValue())
                 {
                     msbuildArgs.Add($"/p:VSTestSetting={settingOption.Value()}");
