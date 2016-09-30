@@ -1,8 +1,7 @@
 {
   "dependencies": {
     "MSTest.TestAdapter": "1.1.2-preview",
-    "MSTest.TestFramework": "1.0.4-preview",
-    "Microsoft.TestPlatform.TestHost": "15.0.0-preview-20160930-01"
+    "MSTest.TestFramework": "1.0.4-preview" 
   },
   "frameworks": {
     "netcoreapp1.0": {

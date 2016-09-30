@@ -172,7 +172,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet-msbuild.Tests", "tes
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet-publish3.Tests", "test\dotnet-publish3.Tests\dotnet-publish3.Tests.xproj", "{FBE4F1D6-BA4C-46D9-8286-4EE4B032D01E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet.test3.Tests", "test\dotnet.test3.Tests\dotnet.test3.Tests.xproj", "{90236A80-4B84-41D3-A161-AA20709776B1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dotnet-test3.Tests", "test\dotnet.test3.Tests\dotnet-test3.Tests.xproj", "{90236A80-4B84-41D3-A161-AA20709776B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

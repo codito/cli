@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Microsoft.DotNet.Cli.CommandLine;
 using Microsoft.DotNet.Cli.Utils;
 using Microsoft.DotNet.Tools.MSBuild;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.DotNet.Tools.Test3
 {
@@ -103,7 +105,8 @@ namespace Microsoft.DotNet.Tools.Test3
                 };
 
                 // TODO: Need to add this on the basis of --diag
-                msbuildArgs.Add("/v:quiet");
+                msbuildArgs.Add("/verbosity:quiet");
+                msbuildArgs.Add("/nologo");
 
                 if (settingOption.HasValue())
                 {
@@ -157,16 +160,63 @@ namespace Microsoft.DotNet.Tools.Test3
                     msbuildArgs.Add($"/p:VSTestPort={portOption.Value()}");
                 }
 
-                // Add in arguments
-                msbuildArgs.AddRange(argRoot.Values);
+                string testProject = FindProjectToRunTestFrom(argRoot.Values);
+                msbuildArgs.Add(testProject);
 
-                // Add remaining arguments that the parser did not understand
+                EnsureRemainingArgumentDoesNotHaveProjectFile(cmd.RemainingArguments);
+
+                // Add remaining arguments that the parser did not understand,
                 msbuildArgs.AddRange(cmd.RemainingArguments);
+
+                Reporter.Output.WriteLine();
+                Reporter.Output.WriteLine(string.Format("Starting executing test from project: {0}", testProject).Green());
 
                 return new MSBuildForwardingApp(msbuildArgs).Execute();
             });
 
             return cmd.Execute(args);
+        }
+
+        private static void EnsureRemainingArgumentDoesNotHaveProjectFile(List<string> remainingArguments)
+        {
+            if(remainingArguments.Count != 0)
+            {
+                Regex pattern = new Regex(@"^.*\..*proj$");
+                
+                foreach(var x in remainingArguments)
+                {
+                    if(pattern.IsMatch(x))
+                    {
+                        throw new GracefulException(
+                    $"Specify a single project file to run tests from.");
+                    }
+                }
+            }
+        }
+
+        private static string FindProjectToRunTestFrom(List<string> argsRoot)
+        {
+            if(argsRoot.Count != 0 )
+            {
+                return argsRoot[0];
+            }
+
+            string directory = Directory.GetCurrentDirectory();
+            string[] projectFiles = Directory.GetFiles(directory, "*.*proj");
+
+            if (projectFiles.Length == 0)
+            {
+                throw new GracefulException(
+                    $"Couldn't find a project to run test from. Ensure a project exists in {directory}." + Environment.NewLine +
+                    "Or pass the path to the project");
+            }
+            else if (projectFiles.Length > 1)
+            {
+                throw new GracefulException(
+                    $"Specify which project file to use because this '{directory}' contains more than one project file.");
+            }
+
+            return projectFiles[0];
         }
     }
 }
