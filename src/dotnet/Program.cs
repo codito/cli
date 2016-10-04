@@ -27,6 +27,8 @@ using Microsoft.DotNet.Tools.Restore3;
 using Microsoft.DotNet.Tools.Run;
 using Microsoft.DotNet.Tools.Test;
 using Microsoft.DotNet.Tools.VSTest;
+using Microsoft.DotNet.Tools.Test3;
+using Microsoft.DotNet.Tools.Migrate;
 using NuGet.Frameworks;
 
 namespace Microsoft.DotNet.Cli
@@ -51,6 +53,7 @@ namespace Microsoft.DotNet.Cli
             ["restore3"] = Restore3Command.Run,
             ["publish3"] = Publish3Command.Run,
             ["vstest"] = VSTestCommand.Run,
+            ["test3"] = Test3Command.Run,
             ["pack3"] = Pack3Command.Run,
             ["migrate"] = MigrateCommand.Run,
             ["projectmodel-server"] = ProjectModelServerCommand.Run,
